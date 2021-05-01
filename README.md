@@ -33,3 +33,5 @@ Commands:
 You can use `awscii` together with the [watch](https://linuxize.com/post/linux-watch-command/) command to create live dashboards for your office screens:
 
 `watch -n60 --color awscii lambda --name my-function-name --graph-types Errors,Invocations --profile default`
+
+![Demo](https://raw.githubusercontent.com/mhlabs/awscii-cli/main/images/demo2.gif)
