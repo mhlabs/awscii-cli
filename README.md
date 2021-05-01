@@ -7,7 +7,7 @@ The purpose of this tool is to give cloud engineers instant access to their reso
 The tool also provides a quick way to find resources using autocomplete and partial search. Each supported service provides a link to the more detailed view in the AWS console for more granular inspection than what ASCII-art offers.
 
 ## Installation
-`npm i -g @mhalbs/awscii-cli`
+`npm i -g @mhlabs/awscii-cli`
 
 ## Prerequisites
 * NodeJS 12 or higher
