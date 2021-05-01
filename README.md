@@ -27,7 +27,7 @@ Commands:
   apigateway|api [options]  Browses and visualises API Gateway V1 metrics as ASCII diagrams
   help [command]            display help for command
 ```
-![Demo](images/demo.gif)
+![Demo](images/demo1.gif)
 
 ## Using `awscii` as a live dashboard
 You can use `awscii` together with the [watch](https://linuxize.com/post/linux-watch-command/) command to create live dashboards for your office screens:
