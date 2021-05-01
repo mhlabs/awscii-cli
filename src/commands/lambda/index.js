@@ -44,7 +44,7 @@ program
     let functionList = [];
     if (!cmd.name) {
       const functionCount = await lambda.getAccountSettings().promise();
-      const cachedFunctions = cacheUtil.get(`functions_${cmd.profile}`);
+      const cachedFunctions = cacheUtil.get(`functions_${cmd.profile}_${cmd.region}`);
       if (functionCount < 500 || !cachedFunctions || cmd.nocache) {
         spinner.start();
         do {
@@ -62,7 +62,7 @@ program
         functionList = functionList.sort((a, b) =>
           a.toLowerCase() > b.toLowerCase() ? 1 : -1
         );
-        cacheUtil.save(`functions_${cmd.profile}`, functionList);
+        cacheUtil.save(`functions_${cmd.profile}_${cmd.region}`, functionList);
       } else {
         console.log(
           "Fetched cached functions. Run command with '--cache false' to force reload"
