@@ -33,7 +33,7 @@
   "bugs": {
     "url": "https://github.com/mhlabs/awscii-cli/issues"
   },
-  "homepage": "https://github.com/mhlabs/awscii-clii#readme",
+  "homepage": "https://github.com/mhlabs/awscii-cli#readme",
   "keywords": [
     "aws",
     "cloudwatch",
