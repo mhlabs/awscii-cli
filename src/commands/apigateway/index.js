@@ -14,7 +14,6 @@ spinner.setSpinnerString("⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤
 program
   .command("apigateway")
   .alias("api")
-  .option("--name [apiName]", "Name of the API. Defaults to UI prompt")
   .option("--id [apiName]", "Id of the API. Defaults to UI prompt")
   .option("--stage [staeName]", "Name of the API stage. Defaults to UI prompt")
   .option("--graph-types [graphName]", "Type(s) of the graph. Comma separated")
@@ -35,7 +34,7 @@ program
 
     let nextMarker = null;
     let resourceList = [];
-    if (!cmd.name) {
+    if (!cmd.id) {
       spinner.start();
       do {
         const apis = await apiGateway
@@ -62,7 +61,7 @@ program
     }
 
     const resource =
-      cmd.name ? {name:cmd, id: cmd.id} : undefined ||
+      cmd.name ? {name:cmd.name, id: cmd.id} : undefined ||
       (await inputUtil.autocomplete("Select Rest API", resourceList));
     const stages = await apiGateway
       .getStages({ restApiId: resource.id })
