@@ -2,7 +2,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
-const settingsPath = path.join(os.homedir(), ".cw-cli");
+const settingsPath = path.join(os.homedir(), ".awscii-cli");
 
 function save(filename, obj) {
   const settingsFilePath = path.join(settingsPath, filename);

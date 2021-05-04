@@ -2,11 +2,13 @@ const asciichart = require("asciichart");
 
 exports.mappings = {
   Invocations: (args) => {
+    const ts = Math.random().toString().replace(".", "");
     return [
       {
-        Id: "invocations",
+        Id: "invocations" + ts,
         Label: "Invocations",
         Color: asciichart.blue,
+        ResourceName: args,
         MetricStat: {
           Stat: "Sum",
           Period: 60,
@@ -20,11 +22,13 @@ exports.mappings = {
     ];
   },
   Duration: (args) => {
+    const ts = Math.random().toString().replace(".", "");;
     return [
       {
-        Id: "min",
+        Id: "min" + ts,
         Label: "Minimum",
         Color: asciichart.blue,
+        ResourceName: args,
         MetricStat: {
           Stat: "Minimum",
           Period: 60,
@@ -36,9 +40,10 @@ exports.mappings = {
         },
       },
       {
-        Id: "avg",
+        Id: "avg" + ts,
         Label: "Average",
         Color: asciichart.yellow,
+        ResourceName: args,
         MetricStat: {
           Stat: "Average",
           Period: 60,
@@ -50,9 +55,10 @@ exports.mappings = {
         },
       },
       {
-        Id: "max",
+        Id: "max" + ts,
         Label: "Maximum",
         Color: asciichart.green,
+        ResourceName: args,
         MetricStat: {
           Stat: "Maximum",
           Period: 60,
@@ -65,13 +71,15 @@ exports.mappings = {
       },
     ];
   },
-  "Errors": (args) => {
+  Errors: (args) => {
     {
+      const ts = Math.random().toString().replace(".", "");;
       return [
         {
-          Id: "errors",
+          Id: "errors" + ts,
           Label: "Errors",
           Color: asciichart.red,
+          ResourceName: args,
           MetricStat: {
             Stat: "Sum",
             Period: 60,
@@ -87,11 +95,13 @@ exports.mappings = {
   },
   "Error count and success rate": (args) => {
     {
+      const ts = Math.random().toString().replace(".", "");;
       return [
         {
-          Id: "errors",
+          Id: `errors` + ts,
           Label: "Errors",
           Color: asciichart.red,
+          ResourceName: args,
           MetricStat: {
             Stat: "Sum",
             Period: 60,
@@ -104,8 +114,9 @@ exports.mappings = {
         },
         {
           Hidden: true,
-          Id: "invocations",
+          Id: `invocations` + ts,
           Label: "Invocations",
+          ResourceName: args,
           MetricStat: {
             Stat: "Sum",
             Period: 60,
@@ -118,20 +129,22 @@ exports.mappings = {
         },
         {
           Color: asciichart.green,
-          Id: "availability",
+          Id: `availability` + ts,
           Label: "Success rate (%)",
-          Expression: "100 - 100 * errors / MAX([errors, invocations])",
+          Expression: `100 - 100 * errors${ts} / MAX([errors${ts}, invocations${ts}])`,
         },
       ];
     }
   },
   "Concurrent executions": (args) => {
     {
+      const ts = Math.random().toString().replace(".", "");;
       return [
         {
-          Id: "concurrentexecutions",
+          Id: "concurrentexecutions" + ts,
           Label: "Concurrent executions",
           Color: asciichart.blue,
+          ResourceName: args,
           MetricStat: {
             Stat: "Maximum",
             Period: 60,
@@ -147,11 +160,13 @@ exports.mappings = {
   },
   Throttles: (args) => {
     {
+      const ts = Math.random().toString().replace(".", "");;
       return [
         {
-          Id: "throttles",
+          Id: "throttles" + ts,
           Label: "Throttles",
           Color: asciichart.blue,
+          ResourceName: args,
           MetricStat: {
             Stat: "Sum",
             Period: 60,
@@ -167,11 +182,14 @@ exports.mappings = {
   },
   "Async delivery failures": (args) => {
     {
+      const ts = Math.random().toString().replace(".", "");;
+
       return [
         {
-          Id: "destinationDeliveryFailures",
+          Id: "destinationDeliveryFailures" + ts,
           Label: "DestinationDeliveryFailures",
           Color: asciichart.red,
+          ResourceName: args,
           MetricStat: {
             Stat: "Sum",
             Period: 60,
@@ -183,9 +201,10 @@ exports.mappings = {
           },
         },
         {
-          Id: "deadLetterErrors",
+          Id: "deadLetterErrors" + ts,
           Label: "DeadLetterErrors",
           Color: asciichart.yellow,
+          ResourceName: args,
           MetricStat: {
             Stat: "Sum",
             Period: 60,
@@ -201,11 +220,14 @@ exports.mappings = {
   },
   IteratorAge: (args) => {
     {
+      const ts = Math.random().toString().replace(".", "");;
+
       return [
         {
-          Id: "iteratorAge",
+          Id: "iteratorAge" + ts,
           Label: "IteratorAge",
           Color: asciichart.blue,
+          ResourceName: args,
           MetricStat: {
             Stat: "Maximum",
             Period: 60,
@@ -221,11 +243,14 @@ exports.mappings = {
   },
   "Concurrent executions": (args) => {
     {
+      const ts = Math.random().toString().replace(".", "");;
+
       return [
         {
-          Id: "concurrentExecutions",
+          Id: "concurrentExecutions" + ts,
           Label: "ConcurrentExecutions",
           Color: asciichart.blue,
+          ResourceName: args,
           MetricStat: {
             Stat: "Maximum",
             Period: 60,

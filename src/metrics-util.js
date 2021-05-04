@@ -3,9 +3,27 @@ const inputUtil = require("./input-util");
 const dateUtil = require("./date-util");
 const asciichart = require("asciichart");
 
+const colorList = [
+    asciichart.red,
+    asciichart.green,
+    asciichart.yellow,
+    asciichart.blue,
+    asciichart.magenta,
+    asciichart.cyan,
+    asciichart.lightgray,
+    asciichart.darkgray,
+    asciichart.lightred,
+    asciichart.lightgreen,
+    asciichart.lightyellow,
+    asciichart.lightblue,
+    asciichart.lightmagenta,
+    asciichart.lightcyan,
+    asciichart.black,
+]
+
 async function render(
   cmd,
-  resourceName,
+  resourceNames,
   graphTypeMapping,
   url,
   quickRunCommand
@@ -23,7 +41,7 @@ async function render(
     graphTypes,
     cmd,
     graphTypeMapping,
-    resourceName,
+    resourceNames,
     cloudwatch
   );
 
@@ -43,7 +61,7 @@ async function getMetricDataAndRender(
   graphTypes,
   cmd,
   graphTypeMapping,
-  resourceName,
+  resourceNames,
   cloudwatch
 ) {
   if (cmd.watch) {
@@ -51,22 +69,27 @@ async function getMetricDataAndRender(
     process.stdout.write("\033c");
   }
 
+  if (!Array.isArray(resourceNames)) {
+      resourceNames = [resourceNames];
+  }
   for (const graphType of graphTypes) {
     console.log(`\n${graphType} last ${cmd.timespan} minutes:`);
-    let graphMetrics = graphTypeMapping.mappings[graphType](resourceName);
+    let graphMetrics = resourceNames.map(p => graphTypeMapping.mappings[graphType](p)).flat();
     const hidden = graphMetrics.filter((p) => p.Hidden).map((p) => p.Id);
+    let colorIndex = 0;
     const colors = graphMetrics
       .filter((p) => !p.Hidden)
       .map((p) => {
         return {
-          color: p.Color || asciichart.default,
+          color: (resourceNames.length > 1 ? colorList[colorIndex++] : p.Color) || asciichart.default,
           id: p.Id,
-          label: p.Label,
+          label: p.Label + (resourceNames.length > 1 ? "(" + p.ResourceName +")" : ""),
         };
       });
     for (const query of graphMetrics) {
       delete query.Hidden;
       delete query.Color;
+      delete query.ResourceName;
     }
     const metricDataResponse = await cloudwatch
       .getMetricData({
