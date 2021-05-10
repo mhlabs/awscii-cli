@@ -23,7 +23,6 @@ program
     "--graph-types [graph name]",
     "Type(s) of the graph. Comma separated (optional)"
   )
-  .option("-s --stack-name [stack bame]", "Name of stack (optional)")
   .option("-t --timespan [timespan]", "The timespan in minutes", 60)
   .option(
     "-r --region [region]",
@@ -48,7 +47,7 @@ program
     let nextMarker = null;
     let functionList = [];
 
-    if (!cmd.name && !cmd.stackName) {
+    if (!cmd.name) {
       const functionCount = await lambda.getAccountSettings().promise();
       const cachedFunctions = cacheUtil.get(
         `functions_${cmd.profile}_${cmd.region}`
@@ -79,13 +78,6 @@ program
       }
     }
     let resourceNames;
-    if (cmd.stackName) {
-      resourceNames = await cloudFormationUtil.selectResources(
-        cmd,
-        "AWS::Serverless::Function",
-        "AWS::Lambda::Function"
-      );
-    }
     resourceNames = resourceNames ||
       (cmd.name ? cmd.name.split(",") : undefined) || [
         await inputUtil.autocomplete("Select function", functionList),
