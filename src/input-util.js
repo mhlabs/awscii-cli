@@ -1,4 +1,7 @@
 const inquirer = require("inquirer");
+const sentencer = require("sentencer");
+const cacheUtil = require("./cache-util");
+
 inquirer.registerPrompt(
   "autocomplete",
   require("inquirer-autocomplete-prompt")
@@ -19,10 +22,12 @@ async function choices(message, items, type, defaults, pageSize = 5) {
         }
         const split = input.split(" ");
         return items.filter((p) => {
-          const str = (typeof p === "string" ? p : p.name);
-          return !str ||
+          const str = typeof p === "string" ? p : p.name;
+          return (
+            !str ||
             split.filter((f) => str.toLowerCase().includes(f.toLowerCase()))
-              .length === split.length;
+              .length === split.length
+          );
         });
       },
     })
@@ -65,10 +70,40 @@ async function prompt(message) {
   ).choice;
 }
 
+const obfuscatedNames = {};
+function obfuscateName(name, type) {
+  if (process.env.AwsciiDemoMode) {
+    const randomName = sentencer
+      .make(`{{ adjective }}-{{ noun }}-${type}`)
+      .toLowerCase();
+    obfuscatedNames[name] = randomName;
+
+    return randomName;
+  }
+
+  return name;
+}
+
+function reverseObfuscatedName(name) {
+  if (Object.keys(obfuscatedNames).includes(name)) {
+    return obfuscatedNames[name];
+  }
+  return name;
+}
+
+function dumpObfuscatedNames() {
+  if (process.env.AwsciiDemoMode) {
+    cacheUtil.save("obfuscated", obfuscatedNames);
+  }
+}
+
 module.exports = {
   autocomplete,
   list,
   checkbox,
   text,
   prompt,
+  obfuscateName,
+  reverseObfuscatedName,
+  dumpObfuscatedNames,
 };

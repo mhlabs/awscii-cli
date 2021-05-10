@@ -1,6 +1,6 @@
 const asciichart = require("asciichart");
 
-exports.mappings = {
+module.exports = {
   Invocations: (args) => {
     const ts = Math.random().toString().replace(".", "");
     return [
@@ -21,24 +21,9 @@ exports.mappings = {
       },
     ];
   },
-  Duration: (args) => {
-    const ts = Math.random().toString().replace(".", "");;
+  "Duration (average)": (args) => {
+    const ts = Math.random().toString().replace(".", "");
     return [
-      {
-        Id: "min" + ts,
-        Label: "Minimum",
-        Color: asciichart.blue,
-        ResourceName: args,
-        MetricStat: {
-          Stat: "Minimum",
-          Period: 60,
-          Metric: {
-            Namespace: "AWS/Lambda",
-            MetricName: "Duration",
-            Dimensions: [{ Name: "FunctionName", Value: args }],
-          },
-        },
-      },
       {
         Id: "avg" + ts,
         Label: "Average",
@@ -54,26 +39,11 @@ exports.mappings = {
           },
         },
       },
-      {
-        Id: "max" + ts,
-        Label: "Maximum",
-        Color: asciichart.green,
-        ResourceName: args,
-        MetricStat: {
-          Stat: "Maximum",
-          Period: 60,
-          Metric: {
-            Namespace: "AWS/Lambda",
-            MetricName: "Duration",
-            Dimensions: [{ Name: "FunctionName", Value: args }],
-          },
-        },
-      },
     ];
   },
   Errors: (args) => {
     {
-      const ts = Math.random().toString().replace(".", "");;
+      const ts = Math.random().toString().replace(".", "");
       return [
         {
           Id: "errors" + ts,
@@ -93,53 +63,9 @@ exports.mappings = {
       ];
     }
   },
-  "Error count and success rate": (args) => {
-    {
-      const ts = Math.random().toString().replace(".", "");;
-      return [
-        {
-          Id: `errors` + ts,
-          Label: "Errors",
-          Color: asciichart.red,
-          ResourceName: args,
-          MetricStat: {
-            Stat: "Sum",
-            Period: 60,
-            Metric: {
-              Namespace: "AWS/Lambda",
-              MetricName: "Errors",
-              Dimensions: [{ Name: "FunctionName", Value: args }],
-            },
-          },
-        },
-        {
-          Hidden: true,
-          Id: `invocations` + ts,
-          Label: "Invocations",
-          ResourceName: args,
-          MetricStat: {
-            Stat: "Sum",
-            Period: 60,
-            Metric: {
-              Namespace: "AWS/Lambda",
-              MetricName: "Invocations",
-              Dimensions: [{ Name: "FunctionName", Value: args }],
-            },
-          },
-        },
-        {
-          Color: asciichart.green,
-          ResourceName: args,
-          Id: `availability` + ts,
-          Label: "Success rate (%)",
-          Expression: `100 - 100 * errors${ts} / MAX([errors${ts}, invocations${ts}])`,
-        },
-      ];
-    }
-  },
   "Concurrent executions": (args) => {
     {
-      const ts = Math.random().toString().replace(".", "");;
+      const ts = Math.random().toString().replace(".", "");
       return [
         {
           Id: "concurrentexecutions" + ts,
@@ -161,7 +87,7 @@ exports.mappings = {
   },
   Throttles: (args) => {
     {
-      const ts = Math.random().toString().replace(".", "");;
+      const ts = Math.random().toString().replace(".", "");
       return [
         {
           Id: "throttles" + ts,
@@ -181,47 +107,9 @@ exports.mappings = {
       ];
     }
   },
-  "Async delivery failures": (args) => {
-    {
-      const ts = Math.random().toString().replace(".", "");;
-
-      return [
-        {
-          Id: "destinationDeliveryFailures" + ts,
-          Label: "DestinationDeliveryFailures",
-          Color: asciichart.red,
-          ResourceName: args,
-          MetricStat: {
-            Stat: "Sum",
-            Period: 60,
-            Metric: {
-              Namespace: "AWS/Lambda",
-              MetricName: "DestinationDeliveryFailures",
-              Dimensions: [{ Name: "FunctionName", Value: args }],
-            },
-          },
-        },
-        {
-          Id: "deadLetterErrors" + ts,
-          Label: "DeadLetterErrors",
-          Color: asciichart.yellow,
-          ResourceName: args,
-          MetricStat: {
-            Stat: "Sum",
-            Period: 60,
-            Metric: {
-              Namespace: "AWS/Lambda",
-              MetricName: "DeadLetterErrors",
-              Dimensions: [{ Name: "FunctionName", Value: args }],
-            },
-          },
-        },
-      ];
-    }
-  },
   IteratorAge: (args) => {
     {
-      const ts = Math.random().toString().replace(".", "");;
+      const ts = Math.random().toString().replace(".", "");
 
       return [
         {
@@ -244,7 +132,7 @@ exports.mappings = {
   },
   "Concurrent executions": (args) => {
     {
-      const ts = Math.random().toString().replace(".", "");;
+      const ts = Math.random().toString().replace(".", "");
 
       return [
         {
