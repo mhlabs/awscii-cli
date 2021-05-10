@@ -14,8 +14,8 @@ const spinner = new Spinner();
 spinner.setSpinnerString("⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈⠈");
 
 program
-  .command("application-monitor")
-  .alias("am")
+  .command("stack")
+  .alias("s")
   .option(
     "--resource-type [stackName]",
     "Name of the CloudFormation stack to monitor. Optional - defaults to UI selector."
@@ -112,7 +112,7 @@ program
       [
         `https://${AWS.config.region}.console.aws.amazon.com/lambda/home?region=${AWS.config.region}#/applications/${inputUtil.reverseObfuscatedName(stackName)}?tab=monitoring`,
       ],
-      `awscii am --resource-type ${resourceType} --names ${resourceNames.map(p=>inputUtil.reverseObfuscatedName(p)).join(
+      `awscii stack --resource-type ${resourceType} --names ${resourceNames.map(p=>inputUtil.reverseObfuscatedName(p)).join(
         ","
       )} --graph-types "#graphtypes#" --profile ${cmd.profile}`
     );
