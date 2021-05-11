@@ -1,5 +1,6 @@
 const { SingleSignOnCredentials } = require("@mhlabs/aws-sdk-sso");
 const program = require("commander");
+const authHelper = require("../../auth-helper");
 const AWS = require("aws-sdk");
 const inputUtil = require("../../input-util");
 const cacheUtil = require("../../cache-util");
@@ -27,7 +28,7 @@ program
   )
   .description("Browses and visualises DynamoDB metrics as ASCII diagrams")
   .action(async (cmd) => {
-    authenticate(cmd);
+    authHelper.authenticate(cmd);
     const cloudWatch = new AWS.CloudWatch();
     let nextMarker = null;
     let resourceList = [];
@@ -68,10 +69,3 @@ program
     }
   });
 
-function authenticate(cmd) {
-  AWS.config.region = cmd.region || process.env.AWS_REGION || AWS.config.region;
-  process.env.AWS_PROFILE = cmd.profile || process.env.AWS_PROFILE;
-  AWS.config.credentialProvider.providers.unshift(
-    new SingleSignOnCredentials()
-  );
-}

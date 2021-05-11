@@ -1,5 +1,6 @@
 const { SingleSignOnCredentials } = require("@mhlabs/aws-sdk-sso");
 const program = require("commander");
+const authHelper = require("../../auth-helper");
 const AWS = require("aws-sdk");
 const inputUtil = require("../../input-util");
 const cacheUtil = require("../../cache-util");
@@ -29,7 +30,7 @@ program
   )
   .description("Browses and visualises API Gateway V1 metrics as ASCII diagrams")
   .action(async (cmd) => {
-    authenticate(cmd);
+    authHelper.authenticate(cmd);
     const apiGateway = new AWS.APIGateway();
 
     let nextMarker = null;
@@ -80,10 +81,3 @@ program
       `awscii apigateway --id ${resource.id} --stage ${stage} --graph-types #graphtypes# --profile ${cmd.profile}`
     );
   });
-function authenticate(cmd) {
-  AWS.config.region = cmd.region || process.env.AWS_REGION || AWS.config.region;
-  process.env.AWS_PROFILE = cmd.profile || process.env.AWS_PROFILE;
-  AWS.config.credentialProvider.providers.unshift(
-    new SingleSignOnCredentials()
-  );
-}

@@ -1,5 +1,6 @@
 const { SingleSignOnCredentials } = require("@mhlabs/aws-sdk-sso");
 const program = require("commander");
+const authHelper = require("../../auth-helper");
 const AWS = require("aws-sdk");
 const inputUtil = require("../../input-util");
 const metricsUtil = require("../../metrics-util");
@@ -26,7 +27,7 @@ program
   )
   .description("Browses and visualises DynamoDB metrics as ASCII diagrams")
   .action(async (cmd) => {
-    authenticate(cmd);
+    authHelper.authenticate(cmd);
     const dynamodb = new AWS.DynamoDB();
 
     let nextMarker = null;
@@ -54,10 +55,3 @@ program
     );
   });
 
-function authenticate(cmd) {
-  AWS.config.region = cmd.region || process.env.AWS_REGION || AWS.config.region;
-  process.env.AWS_PROFILE = cmd.profile || process.env.AWS_PROFILE;
-  AWS.config.credentialProvider.providers.unshift(
-    new SingleSignOnCredentials()
-  );
-}

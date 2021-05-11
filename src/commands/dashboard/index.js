@@ -1,5 +1,6 @@
 const { SingleSignOnCredentials } = require("@mhlabs/aws-sdk-sso");
 const program = require("commander");
+const authHelper = require("../../auth-helper");
 const AWS = require("aws-sdk");
 const inputUtil = require("../../input-util");
 var asciichart = require("asciichart");
@@ -22,7 +23,7 @@ program
     "Browses and ascii-visualises CloudWatch dashboards in an account"
   )
   .action(async (cmd) => {
-    authenticate(cmd);
+    authHelper.authenticate(cmd);
     const cloudwatch = new AWS.CloudWatch();
     const dashboards = await cloudwatch.listDashboards().promise();
     const dashboardName = await inputUtil.list(
@@ -64,9 +65,3 @@ program
       }
     }
   });
-
-
-function authenticate(cmd) {
-  AWS.config.region = cmd.region || process.env.AWS_REGION;
-  process.env.AWS_PROFILE = cmd.profile || process.env.AWS_PROFILE;
-}

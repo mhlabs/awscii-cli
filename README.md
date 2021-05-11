@@ -26,15 +26,15 @@ Version 1.0.x supports the following subset of AWS services:
 Usage: awscii [options] [command]
 
 Options:
-  -v, --version                     output the current version
-  -h, --help                        display help for command
+  -v, --version             output the current version
+  -h, --help                display help for command
 
 Commands:
-  lambda|l [options]                Browses and visualises Lambda metrics as ASCII diagrams
-  dynamodb|ddb [options]            Browses and visualises DynamoDB metrics as ASCII diagrams
-  apigateway|api [options]          Browses and visualises API Gateway V1 metrics as ASCII diagrams
-  application-monitor|am [options]  Browses and visualises Lambda metrics as ASCII diagrams
-  help [command]      
+  lambda|l [options]        Browses and visualises Lambda metrics as ASCII diagrams
+  dynamodb|ddb [options]    Browses and visualises DynamoDB metrics as ASCII diagrams
+  apigateway|api [options]  Browses and visualises API Gateway V1 metrics as ASCII diagrams
+  stack|s [options]         Browses and visualises stack metrics for a CloudFormation stack's resources as ASCII diagrams
+  help [command]            display help for command   
 ```
 ![Demo](https://raw.githubusercontent.com/mhlabs/awscii-cli/main/images/demo.gif)
 

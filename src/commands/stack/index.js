@@ -1,9 +1,8 @@
-const { SingleSignOnCredentials } = require("@mhlabs/aws-sdk-sso");
 const program = require("commander");
+const authHelper = require("../../auth-helper");
 const AWS = require("aws-sdk");
 const inputUtil = require("../../input-util");
 const cacheUtil = require("../../cache-util");
-
 const cloudFormationUtil = require("../../cloudformation-util");
 const graphTypeMapping = require("./graph-type-mapping");
 const metricsUtil = require("../../metrics-util");
@@ -43,9 +42,9 @@ program
     "Results get cached for 24 hours if there are more than 300 functions in the account. Use this to force cache reload",
     false
   )
-  .description("Browses and visualises Lambda metrics as ASCII diagrams")
+  .description("Browses and visualises stack metrics for a CloudFormation stack's resources as ASCII diagrams")
   .action(async (cmd) => {
-    authenticate(cmd);
+    authHelper.authenticate(cmd);
     const cloudFormation = new AWS.CloudFormation();
 
     let nextMarker = null;
@@ -118,13 +117,6 @@ program
       )} --graph-types "#graphtypes#" --profile ${cmd.profile}`
     );
   });
-function authenticate(cmd) {
-  AWS.config.region = cmd.region || process.env.AWS_REGION || AWS.config.region;
-  process.env.AWS_PROFILE = cmd.profile || process.env.AWS_PROFILE;
-  AWS.config.credentialProvider.providers.unshift(
-    new SingleSignOnCredentials()
-  );
-}
 
 function wait(ms) {
   // to avoid rate throttling
