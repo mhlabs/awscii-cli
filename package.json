@@ -1,6 +1,6 @@
 {
   "name": "@mhlabs/awscii-cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Tool that renders ASCII-art graphs of AWS resource's metrics",
   "main": "index.js",
   "scripts": {
