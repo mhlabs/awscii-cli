@@ -70,7 +70,7 @@ program
             })
           );
           nextMarker = stacks.NextToken;
-          await wait(50);
+          await wait(200);
         } while (nextMarker);
         spinner.stop();
         cacheUtil.save(`stacks_${cmd.profile}_${cmd.region}`, stackList);
