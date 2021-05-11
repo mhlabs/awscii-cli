@@ -17,7 +17,7 @@ program
   .command("stack")
   .alias("s")
   .option(
-    "--resource-type [stackName]",
+    "--stack-name [stackName]",
     "Name of the CloudFormation stack to monitor. Optional - defaults to UI selector."
   )
   .option(
