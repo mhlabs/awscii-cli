@@ -71,6 +71,7 @@ program
             })
           );
           nextMarker = stacks.NextToken;
+          await wait(50);
         } while (nextMarker);
         spinner.stop();
         cacheUtil.save(`stacks_${cmd.profile}_${cmd.region}`, stackList);
@@ -124,3 +125,12 @@ function authenticate(cmd) {
     new SingleSignOnCredentials()
   );
 }
+
+function wait(ms) {
+  // to avoid rate throttling
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(ms)
+    }, ms )
+  })
+}  
