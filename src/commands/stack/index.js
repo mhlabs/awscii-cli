@@ -20,6 +20,10 @@ program
     "Name of the CloudFormation stack to monitor. Optional - defaults to UI selector."
   )
   .option(
+    "--resource-type [resourceType]",
+    "Name of the CloudFormation resource type to monitor. E.g 'AWS::Lambda::Function'. Optional - defaults to UI selector."
+  )
+  .option(
     "--names [resourceNames]",
     "Name(s) of the resources to monitor. Optional - defaults to UI selector."
   )
