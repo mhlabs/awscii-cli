@@ -2,6 +2,7 @@ const AWS = require("aws-sdk");
 const inputUtil = require("./input-util");
 const dateUtil = require("./date-util");
 const asciichart = require("asciichart");
+const demoUtil = require("./demo-util");
 
 const colorList = [
   asciichart.red,
@@ -21,44 +22,45 @@ const colorList = [
   asciichart.black,
 ];
 
-async function render(
-  cmd,
-  resourceNames,
-  graphTypeMapping,
-  url,
-  quickRunCommand
-) {
-  const cloudwatch = new AWS.CloudWatch();
+async function renderOptions(opt) {
 
-  const graphTypes =
-    (cmd.graphTypes && cmd.graphTypes.replace(/-/g, " ").split(",")) ||
-    (await inputUtil.checkbox(
-      "Select graph type",
-      Object.keys(graphTypeMapping.mappings)
-    ));
-
-  await getMetricDataAndRender(
-    graphTypes,
-    cmd,
-    graphTypeMapping,
-    resourceNames,
-    cloudwatch
+  return await render(
+    opt.cmd,
+    opt.resourceNames,
+    opt.graphTypeMapping,
+    opt.url,
+    opt.quickRunCommand
   );
 
+}
+
+async function render(cmd, resourceNames, graphTypeMapping, url, quickRunCommand) {
+  const cloudwatch = new AWS.CloudWatch();
+
+  const graphTypes = await extractGraphTypes(cmd, graphTypeMapping);
+
+  await getMetricDataAndRender(graphTypes, cmd, graphTypeMapping, resourceNames, cloudwatch);
+  const types = graphTypes.join(",").replace(/\s/g, "-");
   if (!cmd.name && !cmd.names) {
     console.log(
       "\nRun the following command to get instant access to this graph:"
     );
-    console.log(
-      quickRunCommand.replace(
-        "#graphtypes#",
-        graphTypes.join(",").replace(/\s/g, "-")
-      )
-    );
+    console.log(quickRunCommand.replace("#graphtypes#", types));
     console.log(
       `View in browser:\n${Array.isArray(url) ? url.join("\n") : url}`
     );
   }
+  return { graphTypes: types };
+}
+
+async function extractGraphTypes(cmd, graphTypeMapping) {
+  return (
+    (cmd.graphTypes && cmd.graphTypes.replace(/-/g, " ").split(",")) ||
+    (await inputUtil.checkbox(
+      "Select graph type",
+      Object.keys(graphTypeMapping.mappings)
+    ))
+  );
 }
 
 async function getMetricDataAndRender(
@@ -137,11 +139,13 @@ async function getMetricDataAndRender(
     console.log(xNumbers);
     console.log(
       "    Legend: " +
-        colors.map((p) => p.color + inputUtil.reverseObfuscatedName(p.label)).join(asciichart.default + " | ") +
+        colors
+          .map((p) => p.color + demoUtil.reverseObfuscatedName(p.label))
+          .join(asciichart.default + " | ") +
         asciichart.default
     );
 
-    inputUtil.dumpObfuscatedNames();
+    demoUtil.dumpObfuscatedNames();
   }
 }
 
@@ -163,4 +167,5 @@ function fillEmptyValues(metrics, timespan) {
 
 module.exports = {
   render,
+  renderOptions,
 };

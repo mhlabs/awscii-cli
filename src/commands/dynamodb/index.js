@@ -4,6 +4,7 @@ const authHelper = require("../../auth-helper");
 const AWS = require("aws-sdk");
 const inputUtil = require("../../input-util");
 const metricsUtil = require("../../metrics-util");
+const cacheUtil = require("../../cache-util");
 const graphTypeMapping = require("./graph-type-mapping");
 require("@mhlabs/aws-sdk-sso");
 const { Spinner } = require("cli-spinner");
@@ -25,33 +26,45 @@ program
     "AWS profile. Defaults to environment variable AWS_PROFILE",
     "default"
   )
+  .option("--save [view name]", "Saves the view for future retrieval")
   .description("Browses and visualises DynamoDB metrics as ASCII diagrams")
   .action(async (cmd) => {
-    authHelper.authenticate(cmd);
-    const dynamodb = new AWS.DynamoDB();
-
-    let nextMarker = null;
-    let tableList = [];
-    if (!cmd.tableName) {
-      spinner.start();
-      const tables = await dynamodb.listTables().promise();
-      tableList.push(...tables.TableNames);
-      spinner.stop();
-
-      tableList = tableList.sort((a, b) =>
-        a.toLowerCase() > b.toLowerCase() ? 1 : -1
-      );
-    }
-    const resourceName =
-      cmd.name ||
-      (await inputUtil.autocomplete("Select table", tableList));
-
-    await metricsUtil.render(
-      cmd,
-      resourceName,
-      graphTypeMapping,
-      `https://${AWS.config.region}.console.aws.amazon.com/dynamodb/home?region=${AWS.config.region}#tables:selected=${resourceName};tab=metrics`,
-      `awscii dynamodb --name ${resourceName} --graph-types #graphtypes# --profile ${cmd.profile}`
-    );
+    await handle(cmd);
   });
 
+async function handle(cmd) {
+  authHelper.authenticate(cmd);
+  const dynamodb = new AWS.DynamoDB();
+
+  let nextMarker = null;
+  let tableList = [];
+  if (!cmd.tableName) {
+    spinner.start();
+    const tables = await dynamodb.listTables().promise();
+    tableList.push(...tables.TableNames);
+    spinner.stop();
+
+    tableList = tableList.sort((a, b) =>
+      a.toLowerCase() > b.toLowerCase() ? 1 : -1
+    );
+  }
+  const resourceName =
+    cmd.name || (await inputUtil.autocomplete("Select table", tableList));
+
+  const renderResult = await metricsUtil.render(
+    cmd,
+    resourceName,
+    graphTypeMapping,
+    `https://${AWS.config.region}.console.aws.amazon.com/dynamodb/home?region=${AWS.config.region}#tables:selected=${resourceName};tab=metrics`,
+    `awscii dynamodb --name ${resourceName} --graph-types #graphtypes# --profile ${cmd.profile}`
+  );
+
+  if (cmd.save) {
+    cmd.graphTypes = renderResult.graphTypes;
+    await cacheUtil.saveCommand(cmd, "dynamodb", [resourceName]);
+  }
+}
+
+module.exports = {
+  handle
+}

@@ -44,3 +44,12 @@ You can use `awscii` together with the [watch](https://linuxize.com/post/linux-w
 `watch -n60 --color awscii lambda --name my-function-name --graph-types Errors,Invocations --profile default`
 
 ![Demo](https://raw.githubusercontent.com/mhlabs/awscii-cli/main/images/demo2.gif)
+
+## Saving commands for future retrieval
+All commands take a `--save [view name]` option. This will save the input from the UI in a configuration file so it can be displayed faster next time you want to view it.
+
+To load a saved view or views, use `awscii load [--name [view name(s)]]`. You can display more than one saved view at a time by comma separating the view names.
+
+This lets you compare and visually correlate metrics from different stacks, functions or tables.
+
+![Demo](https://raw.githubusercontent.com/mhlabs/awscii-cli/main/images/demo3.gif)

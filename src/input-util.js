@@ -1,6 +1,4 @@
 const inquirer = require("inquirer");
-const sentencer = require("sentencer");
-const cacheUtil = require("./cache-util");
 
 inquirer.registerPrompt(
   "autocomplete",
@@ -69,41 +67,10 @@ async function prompt(message) {
     })
   ).choice;
 }
-
-const obfuscatedNames = {};
-function obfuscateName(name, type) {
-  if (process.env.AwsciiDemoMode) {
-    const randomName = sentencer
-      .make(`{{ adjective }}-{{ noun }}-${type}`)
-      .toLowerCase();
-    obfuscatedNames[name] = randomName;
-
-    return randomName;
-  }
-
-  return name;
-}
-
-function reverseObfuscatedName(name) {
-  if (Object.keys(obfuscatedNames).includes(name)) {
-    return obfuscatedNames[name];
-  }
-  return name;
-}
-
-function dumpObfuscatedNames() {
-  if (process.env.AwsciiDemoMode) {
-    cacheUtil.save("obfuscated", obfuscatedNames);
-  }
-}
-
 module.exports = {
   autocomplete,
   list,
   checkbox,
   text,
   prompt,
-  obfuscateName,
-  reverseObfuscatedName,
-  dumpObfuscatedNames,
 };

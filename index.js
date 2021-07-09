@@ -7,6 +7,7 @@ require("./src/commands/lambda");
 require("./src/commands/dynamodb");
 require("./src/commands/apigateway");
 require("./src/commands/stack");
+require("./src/commands/load-view");
 
 program.version(package.version, "-v, --version", "output the current version");
 program.parse(process.argv);

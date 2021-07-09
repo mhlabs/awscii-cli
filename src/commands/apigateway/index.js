@@ -19,6 +19,7 @@ program
   .option("--stage [staeName]", "Name of the API stage. Defaults to UI prompt")
   .option("--graph-types [graphName]", "Type(s) of the graph. Comma separated")
   .option("-t --timespan [timespan]", "The timespan in minutes.", 60)
+  .option("--save [view name]", "Saves the view for future retrieval")
   .option(
     "-r --region [region]",
     "AWS region. Defaults to environment variable AWS_REGION"
@@ -28,56 +29,73 @@ program
     "AWS profile. Defaults to environment variable AWS_PROFILE",
     "default"
   )
-  .description("Browses and visualises API Gateway V1 metrics as ASCII diagrams")
+  .description(
+    "Browses and visualises API Gateway V1 metrics as ASCII diagrams"
+  )
   .action(async (cmd) => {
-    authHelper.authenticate(cmd);
-    const apiGateway = new AWS.APIGateway();
-
-    let nextMarker = null;
-    let resourceList = [];
-    if (!cmd.id) {
-      spinner.start();
-      do {
-        const apis = await apiGateway
-          .getRestApis({ position: nextMarker })
-          .promise();
-
-        resourceList.push(
-          ...apis.items.map((p) => {
-            return { name: p.name, value: p };
-          })
-        );
-        nextMarker = apis.position;
-      } while (nextMarker);
-      spinner.stop();
-
-      resourceList = resourceList.sort((a, b) =>
-        a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
-      );
-    }
-
-    if (cmd.id) {
-      const api = await apiGateway.getRestApi({restApiId: cmd.id}).promise();
-      cmd.name = api.name;
-    }
-
-    const resource =
-      cmd.name ? {name:cmd.name, id: cmd.id} : undefined ||
-      (await inputUtil.autocomplete("Select Rest API", resourceList));
-    const stages = await apiGateway
-      .getStages({ restApiId: resource.id })
-      .promise();
-    const stage =
-      cmd.stage ||
-      (await inputUtil.autocomplete(
-        "Select stage",
-        stages.item.map((p) => p.stageName)
-      ));
-    await metricsUtil.render(
-      cmd,
-      { name: resource.name, stage: stage },
-      graphTypeMapping,
-      `https://${AWS.config.region}.console.aws.amazon.com/apigateway/home?region=${AWS.config.region}#/apis/${resource.id}/dashboard`,
-      `awscii apigateway --id ${resource.id} --stage ${stage} --graph-types #graphtypes# --profile ${cmd.profile}`
-    );
+    await handle(cmd);
   });
+async function handle(cmd) {
+  authHelper.authenticate(cmd);
+  const apiGateway = new AWS.APIGateway();
+
+  let nextMarker = null;
+  let resourceList = [];
+  if (!cmd.id) {
+    spinner.start();
+    do {
+      const apis = await apiGateway
+        .getRestApis({ position: nextMarker })
+        .promise();
+
+      resourceList.push(
+        ...apis.items.map((p) => {
+          return { name: p.name, value: p };
+        })
+      );
+      nextMarker = apis.position;
+    } while (nextMarker);
+    spinner.stop();
+
+    resourceList = resourceList.sort((a, b) =>
+      a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+    );
+  }
+
+  if (cmd.id) {
+    const api = await apiGateway.getRestApi({ restApiId: cmd.id }).promise();
+    cmd.name = api.name;
+  }
+
+  const resource = cmd.name
+    ? { name: cmd.name, id: cmd.id }
+    : undefined ||
+      (await inputUtil.autocomplete("Select Rest API", resourceList));
+  const stages = await apiGateway
+    .getStages({ restApiId: resource.id })
+    .promise();
+  const stage =
+    cmd.stage ||
+    (await inputUtil.autocomplete(
+      "Select stage",
+      stages.item.map((p) => p.stageName)
+    ));
+  const renderResult = await metricsUtil.render(
+    cmd,
+    { name: resource.name, stage: stage },
+    graphTypeMapping,
+    `https://${AWS.config.region}.console.aws.amazon.com/apigateway/home?region=${AWS.config.region}#/apis/${resource.id}/dashboard`,
+    `awscii apigateway --id ${resource.id} --stage ${stage} --graph-types #graphtypes# --profile ${cmd.profile}`
+  );
+
+  if (cmd.save) {
+    cmd.graphTypes = renderResult.graphTypes;
+    cmd.stage = stage;
+    cmd.id = resource.id;
+    await cacheUtil.saveCommand(cmd, "apigateway");
+  }
+}
+
+module.exports = {
+  handle,
+};

@@ -1,5 +1,6 @@
 const AWS = require("aws-sdk");
 const inputUtil = require("./input-util");
+const demoUtil = require("./demo-util");
 
 async function selectResources(stackName, ...types) {
   const cfn = new AWS.CloudFormation();
@@ -20,7 +21,7 @@ async function selectResources(stackName, ...types) {
   return await inputUtil.checkbox(
     "Select resource",
     resourceList.sort().map((p) => {
-      return { name: inputUtil.obfuscateName(p, types[0].split("::")[2]), value: p };
+      return { name: demoUtil.obfuscateName(p, types[0].split("::")[2]), value: p };
     })
   );
 }

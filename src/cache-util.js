@@ -1,6 +1,7 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const inputUtil = require("./input-util");
 
 const settingsPath = path.join(os.homedir(), ".awscii-cli");
 
@@ -26,7 +27,28 @@ function get(filename) {
   return JSON.parse(file.toString());
 }
 
+async function saveCommand(cmd, commandName, resourceNames) {
+  const commands = get("views.json") || {};
+  let replace = true;
+  const saveAs = cmd.save;
+  delete cmd.save;
+  delete cmd.nocache;
+  if (commands[saveAs]) {
+    replace = await inputUtil.prompt("View already exists. Replace?");
+  }
+  if (resourceNames) {
+    cmd.name = resourceNames[0];
+    cmd.names = resourceNames;
+  }
+  if (replace) {
+    commands[saveAs] = { commandName, cmd };
+    save("views.json", commands);
+    console.log("Saved command as " + saveAs);
+  }
+}
+
 module.exports = {
+  saveCommand,
   save,
   get,
 };
