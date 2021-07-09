@@ -50,6 +50,6 @@ All commands take a `--save [view name]` option. This will save the input from t
 
 To load a saved view or views, use `awscii load [--name [view name(s)]]`. You can display more than one saved view at a time by comma separating the view names.
 
-This lets you compare and visually correlate metrics from different stacks, functions or tables.
+This lets you compare and visually correlate metrics from different stacks, functions or tables. It's also AWS profile aware, so you can compare metrics in different accounts.
 
 ![Demo](https://raw.githubusercontent.com/mhlabs/awscii-cli/main/images/demo3.gif)
