@@ -1,6 +1,6 @@
 {
   "name": "@mhlabs/awscii-cli",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Tool that renders ASCII-art graphs from AWS resource's metrics",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "dependencies": {
     "@mhlabs/aws-sdk-sso": "^0.0.16",
     "asciichart": "^1.5.25",
-    "aws-sdk": "^2.894.0",
+    "aws-sdk": "^2.1222.0",
     "cli-spinner": "^0.2.10",
     "commander": "^7.2.0",
     "inquirer": "^7.0.4",

@@ -20,6 +20,7 @@ Version 1.0.x supports the following subset of AWS services:
 * Lambda
 * DynamoDB
 * API Gateway
+* Kinesis Data Streams
 
 ## Usage
 ```
